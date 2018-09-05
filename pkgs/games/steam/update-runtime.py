@@ -17,7 +17,7 @@ destdir="newpkg"
 arches=["amd64", "i386"]
 
 REPO="http://repo.steampowered.com/steamrt"
-DIST="scout"
+DIST="scout_beta"
 COMPONENT="main"
 
 out = open("runtime-generated.nix", "w");
