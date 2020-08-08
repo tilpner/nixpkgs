@@ -13,7 +13,7 @@ in {
 
   nodes = {
     server =
-      { config, ... }: {
+      { config, pkgs, ... }: {
         networking.firewall.allowedTCPPorts = [ config.services.gitDaemon.port ];
 
         environment.systemPackages = [ pkgs.git ];
