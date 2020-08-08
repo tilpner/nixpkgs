@@ -121,10 +121,42 @@ in
       script = "${pkgs.git}/bin/git daemon --reuseaddr "
         + (optionalString (cfg.basePath != "") "--base-path=${cfg.basePath} ")
         + (optionalString (cfg.listenAddress != "") "--listen=${cfg.listenAddress} ")
-        + "--port=${toString cfg.port} --user=${cfg.user} --group=${cfg.group} ${cfg.options} "
+        + "--port=${toString cfg.port} ${cfg.options} "
         + "--verbose " + (optionalString cfg.exportAll "--export-all ")  + concatStringsSep " " cfg.repositories;
+
+      serviceConfig = {
+        User = cfg.user;
+        Group = cfg.group;
+
+        ProtectSystem = "strict";
+        ProtectHome = "yes";
+
+        # override to CAP_NET_ADMIN if ports <1024 are needed
+        CapabilityBoundingSet = "";
+        DeviceAllow = "";
+        RestrictNamespaces = true;
+        NoNewPrivileges = true;
+
+        SystemCallArchitectures = "native";
+        RemoveIPC = true;
+        UMask = "0077";
+
+        LockPersonality = true;
+        MemoryDenyWriteExecute = true;
+
+        RestrictRealtime = true;
+
+        PrivateDevices = true;
+        PrivateTmp = true;
+        PrivateUsers = true;
+        ProtectControlGroups = true;
+        ProtectKernelModules = true;
+        ProtectKernelTunables = true;
+        ProtectHostname = true;
+        RestrictSUIDSGID = true;
+
+        RestrictAddressFamilies = [ "~AF_PACKET" "~AF_NETLINK" ];
+      };
     };
-
   };
-
 }
